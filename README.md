@@ -1,2 +1,2 @@
-# nimblestreamer-debian
-Свободно распространяемый стриминг-сервер российского разработчика "Softvelum" 
+# Docker-container NimbleStreamer on Debian
+Свободнораспространяемый стриминг-сервер российского разработчика "Softvelum" https://softvelum.com и https://wmspanel.com
