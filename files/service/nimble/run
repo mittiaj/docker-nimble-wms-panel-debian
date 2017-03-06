@@ -2,53 +2,59 @@
 
 if ! [ -f /etc/nimble/nimble.conf ]; then
 
-    ## Service is not registered yet
+    ## Служба процессов Nimble-сервера 
+    ## ещё не зарегистрирована
     ##
     cat <<EOF
 
-WARNING: Server is not registered yet!
----------------------------------------
+Предупреждение: сервер еще не зарегистрирован!
+----------------------------------------------
 
-Please run the container with the following
-environment variables.
+Пожалуйста, запустите контейнер со следующими 
+переменными среды.
 
-  - WMSPANEL_USER: WMSPanel registered username
-    (e.g. "my@email.com")
-  - WMSPANEL_PASS: WMSPanel user password
-  - WMSPANEL_SLICES: (optional) slice to register
-    the server to.
 
-You may want to mount the /etc/nimble folder from
-a persistent volume, so registration and config
-data is stored outside of the container.
+- WMSPANEL_USER: логин (например, "my@email.com")
+
+- WMSPANEL_PASS: пароль пользователя
+
+- WMSPANEL_SLICES: (необязательно) срезы данных логистики
+
+Вы можете подключить папку (Volume) /etc/nimble снаружи
+контейнера и тогда регистрация и конфигурационные
+данные будут забираться контейнером из вне и оставаться в
+сохранности вне зависимости от состояния (существования)
+контейнера.
 
 EOF
 
-    ## Sleep forever. Let the end user notice the error message
-    ## echoed to the logs.
+    ## Уснуть. 
+    ## Позволив конечному пользователю видеть сообщения об ошибках
+    ## и отправлять их в журналы логов.
     ##
     exec /sbin/setuser nimble sleep infinity 
 fi
 
-# Make nimble user the owner of files in log directory
+# Сделать nimble user владельцем директории файлов логов
 mkdir -p /var/log/nimble
 chown -R nimble:root /var/log/nimble
 
-# Make nimble user the owner of rules.conf
+# Сделать nimble user владельцем файла rules.conf
 if [ -f /etc/nimble/rules.conf ]; then
     chown -R nimble:root /etc/nimble/rules.conf
     chmod 664 /etc/nimble/rules.conf
 fi
 
-# Recreate a directory for a pidfile
+# Пересоздать директорию для для отображения процесса
+# сервера nimble в pidfile
 mkdir -p /var/run/nimble
 chown -R nimble:root /var/run/nimble
 chmod 775 /var/run/nimble
 
-# Set the maximum number of open file descriptors
+# Назначить максимальное количество файловых потоков
 ulimit -n 50000
 
 ARGS="--conf-dir=/etc/nimble --log-dir=/var/log/nimble --pidfile=/var/run/nimble/nimble.pid"
 
-# Run the service as the nimble user
+# Запустить service от имени nimble user
 exec /sbin/setuser nimble /usr/bin/nimble $ARGS
