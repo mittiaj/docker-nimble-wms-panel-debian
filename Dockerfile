@@ -3,11 +3,11 @@ MAINTAINER Mitry Pyostrovsky <mitrypyostrovsky@gmail.com>
 
 ## Стандартная процедура апдейта системы, а также установка утилиты Wget
 ##
-RUN 	 apt-get update \
-		&& apt-get dist-upgrade -y \
-		&& apt-get clean \
-		&& apt-get install -y wget locales \
-		&& apt-get clean
+RUN    apt-get update \
+    && apt-get dist-upgrade -y \
+    && apt-get clean \
+    && apt-get install -y wget locales \
+    && apt-get clean
 
 ## Инсталляция "Nimble Streamer" и преренос конфигурационных файлов внутрь конейнера в /etc/nimble.conf
 ##
@@ -37,8 +37,8 @@ ENV WMSPANEL_SLICES	""
 
 ## Файлы с конфигурацей сервиса (сервера)
 ##
-ADD files/my_init.d		/etc/my_init.d
-ADD files/service			/etc/service
+ADD files/my_init.d	/etc/my_init.d
+ADD files/service	/etc/service
 ADD files/logrotate.d	/etc/logrotate.d
 
 ## Порты, выставляемые наружу контейнера
